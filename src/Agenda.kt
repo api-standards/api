@@ -16,9 +16,6 @@ import java.text.Normalizer
 internal object Agenda {
     private val dates = mapOf(1 to "2026-12-01", 2 to "2026-12-02", 3 to "2026-12-03")
 
-    // Paris is on CET (UTC+01:00) in December
-    private const val OFFSET = "+01:00"
-
     private class Row(val day: Int, val start: String, val end: String, val title: String, val speakers: List<String>)
 
     private fun row(day: Int, start: String, end: String, title: String, vararg speakers: String) =
@@ -72,9 +69,11 @@ internal object Agenda {
             .replace(Regex("[^a-z0-9]+"), "-")
             .trim('-')
 
-    private fun timestamp(day: Int, time: String) = "${dates.getValue(day)}T$time:00$OFFSET"
+    // Times are Paris local time (CET, UTC+01:00 in December)
+    private fun timestamp(day: Int, time: String): LocalDateTime =
+        LocalDateTime.parse("${dates.getValue(day)}T$time:00")
 
-    val days: List<Day> = dates.map { (number, date) -> Day(number, date) }
+    val days: List<Day> = dates.map { (number, date) -> Day(number, LocalDate.parse(date)) }
 
     val sessions: List<Session> = rows.map { row ->
         Session(

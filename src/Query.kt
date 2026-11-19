@@ -44,9 +44,9 @@ class Day internal constructor(
      */
     val number: Int,
     /**
-     * The date as ISO-8601, e.g. "2026-12-01"
+     * The date, e.g. "2026-12-01"
      */
-    val date: String,
+    val date: LocalDate,
 ) {
     /**
      * The sessions on this day, in chronological order
@@ -65,13 +65,13 @@ class Session internal constructor(
      */
     val day: Int,
     /**
-     * Start time as ISO-8601 with the Paris offset, e.g. "2026-12-01T11:00:00+01:00"
+     * Start time in Paris local time (CET, UTC+01:00), e.g. "2026-12-01T11:00:00"
      */
-    val startsAt: String,
+    val startsAt: LocalDateTime,
     /**
-     * End time as ISO-8601 with the Paris offset, e.g. "2026-12-01T11:25:00+01:00"
+     * End time in Paris local time (CET, UTC+01:00), e.g. "2026-12-01T11:25:00"
      */
-    val endsAt: String,
+    val endsAt: LocalDateTime,
     internal val speakerIds: List<String>,
 ) {
     fun speakers(): List<Speaker> = speakerIds.map { id -> Agenda.speakers.first { it.id == id } }
