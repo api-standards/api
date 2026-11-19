@@ -9,9 +9,6 @@ concurrency:
   group: deploy
   cancel-in-progress: false
 
-env:
-  JIB_VERSION: 0.13.0
-
 jobs:
   deploy:
     runs-on: ubuntu-latest
@@ -26,18 +23,5 @@ jobs:
           workload_identity_provider: ${{ vars.GCP_WORKLOAD_IDENTITY_PROVIDER }}
           project_id: api-standards
 
-      - uses: google-github-actions/setup-gcloud@v2
-
-      - name: Configure Artifact Registry credentials
-        run: gcloud auth configure-docker europe-west9-docker.pkg.dev --quiet
-
-      - name: Install Jib CLI
-        run: |
-          curl -sSL -o "$RUNNER_TEMP/jib.zip" "https://github.com/GoogleContainerTools/jib/releases/download/v${JIB_VERSION}-cli/jib-jre-${JIB_VERSION}.zip"
-          unzip -q "$RUNNER_TEMP/jib.zip" -d "$RUNNER_TEMP"
-          echo "$RUNNER_TEMP/jib-${JIB_VERSION}/bin" >> "$GITHUB_PATH"
-
       - name: Build and deploy
-        run: ./scripts/deploy.sh
-        env:
-          REGION: europe-west9
+        run: ./kotlin do deploy

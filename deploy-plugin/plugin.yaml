@@ -1,0 +1,12 @@
+tasks:
+  deploy:
+    action: !apistandards.deploy.deploy
+      jar: ${module.jar}
+      runtimeClasspath: ${module.runtimeClasspath}
+      mainClass: ${module.settings.jvm.mainClass}
+      projectDir: ${project.rootDir}
+      settings: ${pluginSettings}
+
+commands:
+  # ./kotlin do deploy
+  - deploy

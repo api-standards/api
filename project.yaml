@@ -1,0 +1,6 @@
+modules:
+  - ./deploy-plugin
+  - ./server
+
+plugins:
+  - ./deploy-plugin

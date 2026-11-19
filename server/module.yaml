@@ -16,3 +16,10 @@ settings:
       processorOptions:
         galakService: service
         galakPackageName: apistandards
+
+plugins:
+  deploy:
+    enabled: true
+    gcpProject: api-standards
+    service: api-standards
+    repository: api-standards

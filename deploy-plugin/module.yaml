@@ -1,0 +1,10 @@
+product: jvm/amper-plugin
+
+pluginInfo:
+  id: deploy
+  settingsClass: apistandards.deploy.DeploySettings
+
+dependencies:
+  - com.google.cloud.tools:jib-core:0.28.2
+  - com.google.cloud:google-cloud-run:0.103.0
+  - com.google.auth:google-auth-library-oauth2-http:1.58.0
