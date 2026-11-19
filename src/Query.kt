@@ -93,22 +93,39 @@ sealed interface Slot {
 class Session internal constructor(
     override val id: String,
     val title: String,
+    /**
+     * The talk abstract, or null if none was provided. Paragraphs are separated by blank lines.
+     */
+    val description: String?,
     override val day: Int,
     override val startsAt: LocalDateTime,
     override val endsAt: LocalDateTime,
-    internal val speakerIds: List<String>,
+    internal val speakerNames: List<String>,
 ) : Slot {
-    fun speakers(): List<Speaker> = speakerIds.map { id -> Agenda.speakers.first { it.id == id } }
+    fun speakers(): List<Speaker> = speakerNames.map { name -> Agenda.speakers.first { it.name == name } }
 }
 
 class Speaker internal constructor(
     val id: String,
     val name: String,
+    /**
+     * Job title, e.g. "CTO"
+     */
+    val title: String?,
+    val company: String?,
+    /**
+     * Paragraphs are separated by blank lines
+     */
+    val bio: String?,
+    /**
+     * LinkedIn profile URL
+     */
+    val social: String?,
 ) {
     /**
      * The sessions this speaker presents, in chronological order
      */
-    fun sessions(): List<Session> = Agenda.sessions.filter { id in it.speakerIds }
+    fun sessions(): List<Session> = Agenda.sessions.filter { name in it.speakerNames }
 }
 
 /**
