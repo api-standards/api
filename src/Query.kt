@@ -11,34 +11,34 @@ class Query {
     /**
      * The conference days, in chronological order
      */
-    fun days(): List<Day> = Agenda.days
+    fun days(): List<Day> = allDays
 
     /**
      * All sessions in chronological order, optionally filtered by day (1, 2 or 3)
      */
     fun sessions(@GraphQLDefault("null") day: Int?): List<Session> =
-        Agenda.sessions.filter { day == null || it.day == day }
+        allSessions.filter { day == null || it.day == day }
 
     /**
      * All slots (sessions, breaks and lunches) in chronological order, optionally filtered by day (1, 2 or 3)
      */
     fun slots(@GraphQLDefault("null") day: Int?): List<Slot> =
-        Agenda.slots.filter { day == null || it.day == day }
+        allSlots.filter { day == null || it.day == day }
 
     /**
      * A session by id, or null if no such session exists
      */
-    fun session(id: String): Session? = Agenda.sessions.firstOrNull { it.id == id }
+    fun session(id: String): Session? = allSessions.firstOrNull { it.id == id }
 
     /**
      * All speakers, sorted by name
      */
-    fun speakers(): List<Speaker> = Agenda.speakers
+    fun speakers(): List<Speaker> = allSpeakers
 
     /**
      * A speaker by id, or null if no such speaker exists
      */
-    fun speaker(id: String): Speaker? = Agenda.speakers.firstOrNull { it.id == id }
+    fun speaker(id: String): Speaker? = allSpeakers.firstOrNull { it.id == id }
 }
 
 /**
@@ -57,84 +57,10 @@ class Day internal constructor(
     /**
      * The sessions on this day, in chronological order
      */
-    fun sessions(): List<Session> = Agenda.sessions.filter { it.day == number }
+    fun sessions(): List<Session> = allSessions.filter { it.day == number }
 
     /**
      * All slots on this day (sessions, breaks and lunches), in chronological order
      */
-    fun slots(): List<Slot> = Agenda.slots.filter { it.day == number }
+    fun slots(): List<Slot> = allSlots.filter { it.day == number }
 }
-
-/**
- * A time slot on the agenda: either a session or a service slot such as a break or lunch
- */
-sealed interface Slot {
-    val id: String
-
-    /**
-     * The day number: 1, 2 or 3
-     */
-    val day: Int
-
-    /**
-     * Start time in Paris local time (CET, UTC+01:00), e.g. "2026-12-01T11:00:00"
-     */
-    val startsAt: LocalDateTime
-
-    /**
-     * End time in Paris local time (CET, UTC+01:00), e.g. "2026-12-01T11:25:00"
-     */
-    val endsAt: LocalDateTime
-}
-
-/**
- * A talk, panel or other agenda slot that has a title
- */
-class Session internal constructor(
-    override val id: String,
-    val title: String,
-    /**
-     * The talk abstract, or null if none was provided. Paragraphs are separated by blank lines.
-     */
-    val description: String?,
-    override val day: Int,
-    override val startsAt: LocalDateTime,
-    override val endsAt: LocalDateTime,
-    internal val speakerNames: List<String>,
-) : Slot {
-    fun speakers(): List<Speaker> = speakerNames.map { name -> Agenda.speakers.first { it.name == name } }
-}
-
-class Speaker internal constructor(
-    val id: String,
-    val name: String,
-    /**
-     * Job title, e.g. "CTO"
-     */
-    val title: String?,
-    val company: String?,
-    /**
-     * Paragraphs are separated by blank lines
-     */
-    val bio: String?,
-    /**
-     * LinkedIn profile URL
-     */
-    val social: String?,
-) {
-    /**
-     * The sessions this speaker presents, in chronological order
-     */
-    fun sessions(): List<Session> = Agenda.sessions.filter { name in it.speakerNames }
-}
-
-/**
- * A non-session slot on the agenda, such as a coffee break or lunch
- */
-class ServiceSlot internal constructor(
-    override val id: String,
-    val title: String,
-    override val day: Int,
-    override val startsAt: LocalDateTime,
-    override val endsAt: LocalDateTime,
-) : Slot
