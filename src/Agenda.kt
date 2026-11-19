@@ -6,7 +6,7 @@ import java.text.Normalizer
  * The API Standards Conference agenda, transcribed from the
  * "API Standards Conference - FOST Paris 2026 - Agenda Day {1,2,3}.csv" exports.
  *
- * Breaks, meals and "End of Day" rows are left out. These source typos were fixed:
+ * "End of Day" rows are left out. Breaks and lunches are in [serviceRows]. These source typos were fixed:
  * - Day 1 "12:00 PM - 12:25" (missing PM on the end time)
  * - Day 2 "12:20 AM - 12:45 PM" -> 12:20 PM
  * - Day 3 "11:30 PM - 11:55 PM" -> 11:30 AM
@@ -59,6 +59,27 @@ internal object Agenda {
         row(3, "15:55", "16:20", "Unconference: API standards 2027 working group"),
     )
 
+    private class ServiceRow(val day: Int, val start: String, val end: String, val title: String)
+
+    /**
+     * Breaks and lunches: the 15+ minute gaps between sessions.
+     * Lunch is the gap ending at 14:00, the others are breaks.
+     */
+    private val serviceRows = listOf(
+        // Day 1: December 1
+        ServiceRow(1, "12:55", "14:00", "Lunch"),
+        ServiceRow(1, "15:55", "16:30", "Break"),
+
+        // Day 2: December 2
+        ServiceRow(2, "12:45", "14:00", "Lunch"),
+        ServiceRow(2, "15:55", "16:30", "Break"),
+
+        // Day 3: December 3
+        ServiceRow(3, "10:40", "11:00", "Break"),
+        ServiceRow(3, "12:55", "14:00", "Lunch"),
+        ServiceRow(3, "15:25", "15:55", "Break"),
+    )
+
     /**
      * "Željko Kozina" -> "zeljko-kozina"
      */
@@ -85,6 +106,18 @@ internal object Agenda {
             speakerIds = row.speakers.map(::slug),
         )
     }
+
+    val serviceSlots: List<ServiceSlot> = serviceRows.map { row ->
+        ServiceSlot(
+            id = "day${row.day}-${row.start.replace(":", "")}",
+            title = row.title,
+            day = row.day,
+            startsAt = timestamp(row.day, row.start),
+            endsAt = timestamp(row.day, row.end),
+        )
+    }
+
+    val slots: List<Slot> = (sessions + serviceSlots).sortedBy { it.startsAt }
 
     val speakers: List<Speaker> = rows.flatMap { it.speakers }
         .distinct()
