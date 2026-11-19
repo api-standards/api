@@ -21,4 +21,12 @@ interface DeploySettings {
 
     /** The port the application listens on. */
     val port: Int get() = 8080
+
+    /**
+     * Whether Cloud Run talks to the container over cleartext HTTP/2 (h2c) instead of HTTP/1.1.
+     *
+     * Clients get HTTP/2 regardless. Enable this only if the application accepts h2c with prior knowledge,
+     * as Cloud Run then sends it HTTP/2 only.
+     */
+    val http2: Boolean get() = false
 }

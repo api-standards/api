@@ -77,6 +77,11 @@ fun deploy(
     val servicesSettings = ServicesSettings.newBuilder()
         .setCredentialsProvider(FixedCredentialsProvider.create(credentials))
         .build()
+    // The port name tells Cloud Run which protocol to use towards the container
+    val containerPort = ContainerPort.newBuilder()
+        .setName(if (settings.http2) "h2c" else "http1")
+        .setContainerPort(settings.port)
+        .build()
     ServicesClient.create(servicesSettings).use { client ->
         val name = ServiceName.of(settings.gcpProject, settings.region, settings.service)
         val existing = try {
@@ -92,7 +97,7 @@ fun deploy(
                     RevisionTemplate.newBuilder().addContainers(
                         Container.newBuilder()
                             .setImage(imageWithTag)
-                            .addPorts(ContainerPort.newBuilder().setContainerPort(settings.port))
+                            .addPorts(containerPort)
                     )
                 )
                 .build()
@@ -102,7 +107,14 @@ fun deploy(
             val template = existing.template.toBuilder()
                 // A revision name, if any, must be unique, so let Cloud Run generate a new one
                 .clearRevision()
-            template.setContainers(0, template.getContainers(0).toBuilder().setImage(imageWithTag))
+            template.setContainers(
+                0,
+                template.getContainers(0).toBuilder()
+                    .setImage(imageWithTag)
+                    // Cloud Run allows a single port, so this replaces the existing one
+                    .clearPorts()
+                    .addPorts(containerPort)
+            )
             client.updateServiceAsync(existing.toBuilder().setTemplate(template).build()).get()
         }
         println("Deployed ${deployed.latestReadyRevision} at ${deployed.uri}")

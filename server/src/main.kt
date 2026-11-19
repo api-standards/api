@@ -11,7 +11,15 @@ import io.ktor.server.routing.routing
 
 fun main() {
     val port = System.getenv("PORT")?.toIntOrNull() ?: 8080
-    embeddedServer(Netty, port = port, module = Application::apiStandardsModule).start(wait = true)
+    embeddedServer(
+        Netty,
+        configure = {
+            connector { this.port = port }
+            // Accept cleartext HTTP/2 (h2c), which Cloud Run sends when the container port is named "h2c"
+            enableH2c = true
+        },
+        module = Application::apiStandardsModule,
+    ).start(wait = true)
 }
 
 fun Application.apiStandardsModule() {

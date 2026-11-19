@@ -1,7 +1,10 @@
 product: jvm/app
 
+repositories:
+  - https://galak.mbonnin.net/.m2/snapshots
+
 dependencies:
-  - net.mbonnin.galak:galak-ktor:0.0.0
+  - net.mbonnin.galak:galak-ktor:0.0.0-SNAPSHOT-255c3f22398ba6d975bebde90431f39345985d9f
   - io.ktor:ktor-server-netty:3.5.2
   - org.slf4j:slf4j-simple:2.0.13
 
@@ -11,7 +14,7 @@ settings:
   kotlin:
     ksp:
       processors:
-        - net.mbonnin.galak:galak-processor:0.0.0
+        - net.mbonnin.galak:galak-processor:0.0.0-SNAPSHOT-255c3f22398ba6d975bebde90431f39345985d9f
       # The Galak Gradle plugin normally sets these. Kotlin Toolchain has no Galak plugin, so they're set by hand.
       processorOptions:
         galakService: service
