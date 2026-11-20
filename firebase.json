@@ -1,0 +1,13 @@
+{
+  "hosting": {
+    "public": "hosting",
+    "ignore": ["**/.*"],
+    "rewrites": [{
+      "source": "**",
+      "run": {
+        "serviceId": "api-standards",
+        "region": "europe-west9"
+      }
+    }]
+  }
+}

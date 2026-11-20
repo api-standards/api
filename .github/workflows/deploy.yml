@@ -25,3 +25,6 @@ jobs:
 
       - name: Build and deploy
         run: ./kotlin do deploy
+
+      - name: Deploy Firebase Hosting
+        run: npx --yes firebase-tools deploy --only hosting --project api-standards --non-interactive
