@@ -27,4 +27,4 @@ jobs:
         run: ./kotlin do deploy
 
       - name: Deploy Firebase Hosting
-        run: npx --yes firebase-tools deploy --only hosting --project api-standards --non-interactive
+        run: npx --yes firebase-tools deploy --only hosting --project api-standards --non-interactive --debug || { cat firebase-debug.log 2>/dev/null; exit 1; }
