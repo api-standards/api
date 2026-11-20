@@ -25,7 +25,8 @@ fun main() {
 
 fun Application.apiStandardsModule() {
     // POST/GET /graphql
-    galakModule(ServiceExecutableSchemaBuilder().build())
+    // HTTP QUERY is disabled because Firebase Hosting (graphql.api-standards.io) rejects it with a 405.
+    galakModule(ServiceExecutableSchemaBuilder().build(), enableHttpQuery = false)
 
     // GraphiQL 6 at /
     val graphiql = Query::class.java.getResource("/graphiql.html")!!.readText()
