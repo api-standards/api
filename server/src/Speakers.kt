@@ -245,6 +245,7 @@ internal val allSpeakers: List<Speaker> = listOf(
         title = "Product Manager - Metadata & Domain Alignment CoE",
         company = "SAP",
         socials = listOf(Social(name = "LinkedIn", url = "https://www.linkedin.com/in/galina-tuova-178563157/")),
+        photo = "https://media.licdn.com/dms/image/v2/C4E03AQH-6oc-3jefZQ/profile-displayphoto-shrink_200_200/profile-displayphoto-shrink_200_200/0/1604427403885?e=2147483647&v=beta&t=E2K5OEfIODjZ6DWSpdmUSS4TbPtP8Ov7vgG_wfjNV8E",
     ),
     speaker(
         "Hugo Guerrero",
