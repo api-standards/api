@@ -364,7 +364,7 @@ internal val allSpeakers: List<Speaker> = listOf(
     speaker(
         "Pubudu Gunatilaka",
         title = "Director & Head of Architecture, API Platform BU",
-        company = "WSO2",
+        company = "Choreo Labs",
         socials = listOf(
             Social(name = "LinkedIn", url = "https://www.linkedin.com/in/pubudugunatilaka/"),
             Social(name = "GitHub", url = "https://github.com/pubudu538"),
